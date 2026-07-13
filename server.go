@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"log"
@@ -19,17 +19,5 @@ func Listen(addr string, handler Handler) error {
 			continue
 		}
 		go handleFunc(conn, handler)
-	}
-}
-
-func main() {
-	mux := NewMux()
-	mux.Handle("/time", handleTime)
-	mux.Handle("/json", handleJSON)
-	mux.Handle("/teapot", handleTeapot)
-	mux.Handle("/hello", handleHello)
-
-	if err := Listen(":8090", mux); err != nil {
-		log.Fatal(err)
 	}
 }
