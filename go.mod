@@ -1,3 +1,3 @@
-module tcp_echo_hard
+module github.com/Elizabethppppp/tcp_server
 
 go 1.25.1
