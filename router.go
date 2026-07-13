@@ -1,16 +1,23 @@
 package main
 
-func router(w ResponseWriter, r *Request) {
-	switch r.Path {
-	case "/time":
-		handleTime(w, r)
-	case "/json":
-		handleJSON(w, r)
-	case "/teapot":
-		handleTeapot(w, r)
-	case "/hello":
-		handleHello(w, r)
-	default:
+type Mux struct {
+	routes map[string]HandlerFunc
+}
+
+func NewMux() *Mux {
+	return &Mux{
+		routes: make(map[string]HandlerFunc),
+	}
+}
+
+func (m *Mux) Handle(path string, h HandlerFunc) {
+	m.routes[path] = h
+}
+
+func (m *Mux) ServeHTTP(w ResponseWriter, r *Request) {
+	if h, inMap := m.routes[r.Path]; inMap {
+		h(w, r)
+	} else {
 		handleNotFound(w, r)
 	}
 }
