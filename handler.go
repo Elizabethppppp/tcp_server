@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func handleFunc(conn net.Conn, router Router) {
+func handleFunc(conn net.Conn, mux HandlerFunc) {
 	defer conn.Close()
 
 	reader := bufio.NewReader(conn)
@@ -20,7 +20,7 @@ func handleFunc(conn net.Conn, router Router) {
 		return
 	}
 
-	router.ServeHTTP(w, r)
+	mux(w, r)
 
 	w.Flush(conn)
 }

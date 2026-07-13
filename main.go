@@ -24,6 +24,6 @@ func main() {
 			log.Println("Error accepting", err)
 			continue
 		}
-		go handleFunc(conn, mux)
+		go handleFunc(conn, mux.ServeHTTP)
 	}
 }
