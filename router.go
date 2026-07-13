@@ -1,5 +1,9 @@
 package main
 
+type Handler interface {
+	ServeHTTP(ResponseWriter, *Request)
+}
+
 type Mux struct {
 	routes map[string]HandlerFunc
 }
