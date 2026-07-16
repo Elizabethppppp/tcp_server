@@ -60,3 +60,18 @@ func TestMux_NotFound(t *testing.T) {
 		t.Errorf("Статус получен %d, want %d", fw.status, 404)
 	}
 }
+
+func TestMux_PathParam(t *testing.T) {
+	m := NewMux()
+
+	var userID string
+	m.Handle("/user/{id}", func(w ResponseWriter, r *Request) {
+		userID = r.Param("id")
+	})
+
+	m.ServeHTTP(newFakeWriter(), &Request{Method: "GET", Path: "/user/123"})
+
+	if userID != "123" {
+		t.Errorf("r.Param(\"id\") = %q, want %q", userID, "123")
+	}
+}
