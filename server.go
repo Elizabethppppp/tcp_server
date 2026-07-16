@@ -21,3 +21,12 @@ func Listen(addr string, handler Handler) error {
 		go handleFunc(conn, handler)
 	}
 }
+
+const (
+	StatusOK                  = 200
+	StatusBadRequest          = 400
+	StatusNotFound            = 404
+	StatusMethodNotAllowed    = 405
+	StatusInternalServerError = 500
+	StatusMoving              = 302
+)
