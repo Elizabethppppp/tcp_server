@@ -14,6 +14,11 @@ type Request struct {
 	Proto   string
 	Headers map[string]string
 	Body    []byte
+	param   map[string]string
+}
+
+func (r *Request) Param(key string) string {
+	return r.param[key]
 }
 
 func parseRequestLine(line string) (method, requestURI, proto string, ok bool) {
