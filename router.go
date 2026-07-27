@@ -13,6 +13,7 @@ type segment struct {
 
 type route struct {
 	path     string
+	method   string
 	segments []segment
 	handler  HandlerFunc
 }
@@ -27,12 +28,23 @@ func NewMux() *Mux {
 	}
 }
 
-func (m *Mux) Handle(path string, h HandlerFunc) {
-	s := strings.Split(strings.Trim(path, "/"), "/")
+func (m *Mux) Handle(r string, h HandlerFunc) {
 
-	seg := make([]segment, len(s))
+	s := strings.SplitN(r, " ", 2)
+	if len(s) != 2 {
+		panic("invalid length: " + r)
+	}
+	if s[0] == "" || s[1] == "" {
+		panic("invalid route: " + r)
+	}
 
-	for i, value := range s {
+	method := strings.ToUpper(s[0])
+	path := s[1]
+	segments := strings.Split(strings.Trim(path, "/"), "/")
+
+	seg := make([]segment, len(segments))
+
+	for i, value := range segments {
 		if strings.HasPrefix(value, "{") && strings.HasSuffix(value, "}") {
 			seg[i] = segment{
 				value:   strings.Trim(value, "{}"),
@@ -47,6 +59,7 @@ func (m *Mux) Handle(path string, h HandlerFunc) {
 	}
 
 	route := route{
+		method:   method,
 		path:     path,
 		segments: seg,
 		handler:  h,
@@ -56,9 +69,13 @@ func (m *Mux) Handle(path string, h HandlerFunc) {
 }
 
 func (m *Mux) ServeHTTP(w ResponseWriter, r *Request) {
+
 	p := strings.Split(strings.Trim(r.Path, "/"), "/")
 
 	for _, value := range m.routes {
+		if value.method != r.Method {
+			continue
+		}
 		if len(p) != len(value.segments) {
 			continue
 		}
