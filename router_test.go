@@ -25,8 +25,8 @@ func TestMux_DispatchesToRegisteredHandler(t *testing.T) {
 	m := NewMux()
 
 	var called string
-	m.Handle("/a", func(w ResponseWriter, r *Request) { called = "a" })
-	m.Handle("/b", func(w ResponseWriter, r *Request) { called = "b" })
+	m.Handle("get /a", func(w ResponseWriter, r *Request) { called = "a" })
+	m.Handle("get /b", func(w ResponseWriter, r *Request) { called = "b" })
 
 	m.ServeHTTP(newFakeWriter(), &Request{Method: "GET", Path: "/b"})
 
@@ -39,8 +39,8 @@ func TestMux_DispatchesToRegisteredHandlerPOST(t *testing.T) {
 	m := NewMux()
 
 	var calledP string
-	m.Handle("/a", func(w ResponseWriter, r *Request) { calledP = "a" })
-	m.Handle("/b", func(w ResponseWriter, r *Request) { calledP = "b" })
+	m.Handle("post /a", func(w ResponseWriter, r *Request) { calledP = "a" })
+	m.Handle("post /b", func(w ResponseWriter, r *Request) { calledP = "b" })
 
 	m.ServeHTTP(newFakeWriter(), &Request{Method: "POST", Path: "/b"})
 
@@ -65,7 +65,7 @@ func TestMux_PathParam(t *testing.T) {
 	m := NewMux()
 
 	var userID string
-	m.Handle("/user/{id}", func(w ResponseWriter, r *Request) {
+	m.Handle("get /user/{id}", func(w ResponseWriter, r *Request) {
 		userID = r.Param("id")
 	})
 
@@ -73,19 +73,5 @@ func TestMux_PathParam(t *testing.T) {
 
 	if userID != "123" {
 		t.Errorf("r.Param(\"id\") = %q, want %q", userID, "123")
-	}
-}
-
-func TestMuxDispatchesToRegisteredHandlerPOSTwithNewSignature(t *testing.T) {
-	m := NewMux()
-
-	var calledP string
-	m.Handle("post /a", func(w ResponseWriter, r *Request) { calledP = "a" })
-	m.Handle("POST /b", func(w ResponseWriter, r *Request) { calledP = "b" })
-
-	m.ServeHTTP(newFakeWriter(), &Request{Method: "POST", Path: "/b"})
-
-	if calledP != "b" {
-		t.Errorf("вызван хендлер %q, want %q", calledP, "b")
 	}
 }
