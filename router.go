@@ -19,26 +19,16 @@ type route struct {
 }
 
 type Mux struct {
-	routes      []route
-	middlewares []Middleware
+	routes []route
 }
 
 func NewMux() *Mux {
 	return &Mux{
-		routes:      make([]route, 0),
-		middlewares: make([]Middleware, 0),
+		routes: make([]route, 0),
 	}
-}
-
-func (m *Mux) Use(mw Middleware) {
-	m.middlewares = append(m.middlewares, mw)
 }
 
 func (m *Mux) Handle(r string, h HandlerFunc) {
-
-	for i := len(m.middlewares) - 1; i >= 0; i-- {
-		h = m.middlewares[i](h)
-	}
 
 	s := strings.SplitN(r, " ", 2)
 	if len(s) != 2 {
