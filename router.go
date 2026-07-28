@@ -19,13 +19,19 @@ type route struct {
 }
 
 type Mux struct {
-	routes []route
+	routes      []route
+	middlewares []Middleware
 }
 
 func NewMux() *Mux {
 	return &Mux{
-		routes: make([]route, 0),
+		routes:      make([]route, 0),
+		middlewares: make([]Middleware, 0),
 	}
+}
+
+func (m *Mux) Use(mw Middleware) {
+	m.middlewares = append(m.middlewares, mw)
 }
 
 func (m *Mux) Handle(r string, h HandlerFunc) {

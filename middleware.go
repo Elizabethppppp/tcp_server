@@ -22,6 +22,8 @@ func (w *ResponseLog) Write(p []byte) (int, error) {
 	return w.ResponseWriter.Write(p)
 }
 
+type Middleware func(HandlerFunc) HandlerFunc
+
 func RequestMiddleware(hand HandlerFunc) HandlerFunc {
 	return func(w ResponseWriter, r *Request) {
 
