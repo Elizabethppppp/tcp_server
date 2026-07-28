@@ -74,7 +74,7 @@ func writeLog(fields []any) {
 	}
 	logMap["time"] = time.Now().Format(time.RFC3339)
 
-	jsonData, err := json.Marshal(logMap)
+	jsonData, err := json.MarshalIndent(logMap, "", " ")
 	if err != nil {
 		return
 	}
