@@ -36,6 +36,10 @@ func (m *Mux) Use(mw Middleware) {
 
 func (m *Mux) Handle(r string, h HandlerFunc) {
 
+	for i := len(m.middlewares) - 1; i >= 0; i-- {
+		h = m.middlewares[i](h)
+	}
+
 	s := strings.SplitN(r, " ", 2)
 	if len(s) != 2 {
 		panic("invalid length: " + r)
